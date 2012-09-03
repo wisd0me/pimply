@@ -1,0 +1,23 @@
+
+Pimply is a GTK+2 wallpaper changer.
+
+Dependencies: gtk+2, glib
+Versions: tested with gtk+ 2.12, glib 2.16
+
+Written by: Lil AZ aka wisd0me <ak47izatool@gmail.com>
+Bug reports/other feedback is appreciated.
+
+Compile:
+ $ make
+
+Install:
+ # make install
+or
+ # make PREFIX=/usr install
+
+Usage:
+To set background just run pimply.
+To see command line options (like restore previously set background), run:
+$ pimply --help
+
+enjoy ;>
