@@ -133,7 +133,7 @@ void on_about_b(GtkWidget *widget, gpointer data) {
     gtk_about_dialog_set_program_name(GTK_ABOUT_DIALOG(about), NAME);
     gtk_about_dialog_set_version(GTK_ABOUT_DIALOG(about), VERSION);
     gtk_about_dialog_set_copyright(GTK_ABOUT_DIALOG(about), "Written by Lil AZ <ak47izatool@gmail.com>");
-    gtk_about_dialog_set_license(GTK_ABOUT_DIALOG(about), "Distributed under the terms of GPLv2 n all dat shit...");
+    gtk_about_dialog_set_license(GTK_ABOUT_DIALOG(about), "Distributed under the terms of GPLv2 n all dat...");
     gtk_about_dialog_set_comments(GTK_ABOUT_DIALOG(about), "Pimply - GTK2 wallpaper changer");
     //gtk_about_dialog_set_authors(GTK_ABOUT_DIALOG(about), authors);
     //gtk_about_dialog_set_translator_credits(GTK_ABOUT_DIALOG(about), "Lil AZ\nRichard M. Stallman");
