@@ -1,27 +1,26 @@
-include $(wildcard *.d)
+# disable bullshit ass implicit rules; i'll be doing shit explicitly
+export MAKEFLAGS += --no-builtin-rules
+.SUFFIXES:
 
-#CC	= gcc
-CFLAGS	= -O1 -g -Wall `pkg-config --cflags gtk+-2.0` -std=c99
-LDFLAGS = `pkg-config --libs gtk+-2.0` -lX11 -Wl,-O1 -s
-OBJECTS	= pimply.o callbacks.o config.o
+CFLAGS	= -std=gnu99 -O0 -g -Wall -pipe `pkg-config --cflags gtk+-2.0` 
+LDFLAGS = `pkg-config --libs gtk+-2.0` -lX11 -Wl,-O1
+OBJECTS := $(patsubst %.c, %.o, $(wildcard *.c))
 PREFIX	= /usr/local
 INSTALL	= -m 755
 BINARY  = pimply
 
 .PHONY: all clean install uninstall
-all: $(BINARY)
-
-$(BINARY): $(OBJECTS)
+all: $(OBJECTS)
 	$(CC) $(OBJECTS) -o $(BINARY) $(LDFLAGS)
 
 %.o: %.c
-	$(CC) $(CFLAGS) -MMD -c -o $@ $<
+	$(CC) $(CFLAGS) -c -o $@ $<
 
 clean:
-		rm -f $(OBJECTS) *.d $(BINARY) *~
+	rm -f $(OBJECTS) *.d $(BINARY) *~
 
 install:
-		install $(INSTALL) $(BINARY) $(PREFIX)/bin
+	install $(INSTALL) $(BINARY) $(PREFIX)/bin
 
 uninstall:	
-		rm $(PREFIX)/bin/$(BINARY)
+	rm $(PREFIX)/bin/$(BINARY)
