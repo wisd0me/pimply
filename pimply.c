@@ -17,9 +17,8 @@
 #include "callbacks.h"
 #include "config.h"
 
+/* TODO: global object was a misconception, and need to be handled */
 PimplyWindow pimply;
-/* global objects i want to get rid of */
-//PimplyImage img;
 
 /* used for "Centered" mode */
 DrawParams *calculate_draw_params_center(DrawParams *draw_parm, gint width, gint height) {
@@ -135,23 +134,24 @@ void pimply_set_background(PimplyImage *image) {
     }
     gdk_window_set_back_pixmap(pimply.desktop, image->pm, FALSE);
 
-    /* Folowing code was STOLEN!!1 from qiv :-\ */
-    Display *display=GDK_DISPLAY();
-    Window xwin=RootWindow(display, DefaultScreen(display));
-    Atom prop_root=XInternAtom(display, "_XROOTPMAP_ID", False),
-        prop_esetroot=XInternAtom(display, "ESETROOT_PMAP_ID", False),
-        xa_pixmap=XInternAtom(display, "PIXMAP", True), prop_type;
+    /* Folowing code was STOLEN!!1 from qiv :\ */
+    Display *display = GDK_DISPLAY();
+    Window xwin = RootWindow(display, DefaultScreen(display));
+    Atom prop_root = XInternAtom(display, "_XROOTPMAP_ID", False),
+        prop_esetroot = XInternAtom(display, "ESETROOT_PMAP_ID", False),
+        xa_pixmap = XInternAtom(display, "PIXMAP", True), prop_type;
     unsigned char *data_root, *data_esetroot;
     int prop_format;
     unsigned long prop_length, after;
-    Pixmap pixmap_id=GDK_WINDOW_XWINDOW(image->pm);
-    
+    Pixmap pixmap_id = GDK_WINDOW_XWINDOW(image->pm);
+
+    data_root = data_esetroot = NULL;
     /* test whether an existing client should be killed */
     XGetWindowProperty(display, xwin,
                        prop_root, 0, 1, False, AnyPropertyType,
                        &prop_type, &prop_format, &prop_length, &after,
                        &data_root);
-    if (prop_type==xa_pixmap) {
+    if (prop_type == xa_pixmap) {
         XGetWindowProperty(display, xwin,
                            prop_esetroot, 0, 1, False, AnyPropertyType,
                            &prop_type, &prop_format, &prop_length, &after,
@@ -159,8 +159,8 @@ void pimply_set_background(PimplyImage *image) {
         /* If data structures match the client can be safely killed. In case of
            data structure mismatch just ignore the client since it possibly could
            be the window manager. Memory should not be reclaimed in this case. */
-        if (data_root&&data_esetroot&&prop_type==xa_pixmap&&
-            *((Pixmap*)data_root)==*((Pixmap*)data_esetroot))
+        if (data_root && data_esetroot && prop_type == xa_pixmap &&
+            *((Pixmap*) data_root) == *((Pixmap*) data_esetroot))
             /* Do NOT kill any clients. It seems that GDK is already taking care
                of killing the pixmap if set with gdk_window_set_back_pixmap.
                XKillClient(display, *((Pixmap*)data_root)) */;
@@ -174,6 +174,8 @@ void pimply_set_background(PimplyImage *image) {
     XChangeProperty(display, xwin, prop_esetroot, xa_pixmap, 32,
                     PropModeReplace, (unsigned char*)&pixmap_id, 1);
     XSetCloseDownMode(display, RetainPermanent);
+    if (data_root) XFree(data_root);
+    if (data_esetroot) XFree (data_esetroot);
 
     gdk_window_clear(pimply.desktop);
     gdk_flush();
@@ -189,10 +191,12 @@ PimplyImage *pimply_load_image(gchar *file) {
     if (image == NULL || file == NULL)
         return(NULL);
 
+    g_free(image->file_name);
     image->file_name = g_strdup(file);
     //g_print("load_image_true(): file_name %s\n", image->file_name);
     if (gdk_pixbuf_get_file_info(image->file_name, &image->width, &image->height) == NULL) {
         g_print("error opening image '%s'\n", image->file_name);
+        g_free(image->file_name);
         g_slice_free(PimplyImage, image);
         image = NULL;
     }
@@ -252,7 +256,7 @@ GtkTreeModel *create_model(gchar **images) {
     GtkListStore *store;
     GtkTreeIter iter;
     gint i;
-    gchar *name;
+    gchar *name, *basename;
     PimplyImage *image;
 
     /* Third column should be a PimplyImage structure! */
@@ -262,9 +266,13 @@ GtkTreeModel *create_model(gchar **images) {
         /* skip bad or not existent files */
         if ( (image = pimply_load_image(images[i])) == NULL)
             continue;
-        name = truncate_file_name(g_path_get_basename(images[i]));
+        basename = g_path_get_basename(images[i]);
+        name = truncate_file_name(basename);
         gtk_list_store_append(store, &iter);
         gtk_list_store_set(store, &iter, 0, image->pb, 1, name, 2, images[i], -1);
+        g_free(basename);
+        g_free(image->file_name);
+        g_object_unref(image->pb);
         g_slice_free(PimplyImage, image); /* under question */
     }
 
@@ -313,7 +321,7 @@ void pimply_init() {
     pimply.title = NAME;
     pimply.width = 350;
     pimply.height = 400;
-    
+
     if (config.current) pimply.last_folder = g_path_get_dirname(config.current);
     else pimply.last_folder = getenv("HOME");
 

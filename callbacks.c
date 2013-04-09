@@ -53,7 +53,7 @@ void on_add_b(void) {
     GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(pimply.tree));
     GtkTreeIter iter;
     PimplyImage *image;
-    gchar *file_name;
+    gchar *file_name, *base_name;
 
     if (pimply_open_dialog(&file_name) != NULL) {
         //g_print("loaded: %s\n", file_name);
@@ -61,10 +61,13 @@ void on_add_b(void) {
             return;
 
         GtkTreePath *last_node;
+
         g_free(file_name);
-        file_name = truncate_file_name(g_path_get_basename(image->file_name));
+        base_name = g_path_get_basename(image->file_name);
+        file_name = truncate_file_name(base_name);
         gtk_list_store_append(GTK_LIST_STORE(model), &iter);
         gtk_list_store_set(GTK_LIST_STORE(model), &iter, 0, image->pb, 1, file_name, 2, image->file_name, -1);
+        g_free(base_name);
         /* select added row */
         last_node = gtk_tree_model_get_path(model, &iter);
         gtk_tree_view_set_cursor(GTK_TREE_VIEW(pimply.tree), last_node, NULL, FALSE);
@@ -114,11 +117,11 @@ void on_apply_b() {
         pimply_set_background(image);
         //g_print("config.current = %s %x\n", config.current, config.current);
         //g_free(config.current);
+        g_free(config.current);
         config.current = g_strdup(image->file_name);
         config.mode = gtk_combo_box_get_active(GTK_COMBO_BOX(pimply.combo));
         config_write_list(model, image->file_name, config.mode);
         g_slice_free(PimplyImage, image);
-        //pimply_image_free(image);
         //gtk_widget_set_sensitive(pimply.apply_b, FALSE);
         gtk_widget_grab_focus(pimply.add_b);
     }
@@ -199,6 +202,7 @@ gchar *pimply_open_dialog(gchar **file_name) {
         }
     }
 
+    g_object_unref(preview);
     gtk_widget_destroy(open_dialog);
     return(*file_name);
 }

@@ -10,11 +10,15 @@ INSTALL	= -m 755
 BINARY  = pimply
 
 .PHONY: all clean install uninstall
-all: $(OBJECTS)
+all: $(BINARY)
+
+include $(wildcard *.d)
+
+$(BINARY): $(OBJECTS)
 	$(CC) $(OBJECTS) -o $(BINARY) $(LDFLAGS)
 
 %.o: %.c
-	$(CC) $(CFLAGS) -c -o $@ $<
+	$(CC) $(CFLAGS) -MMD -c -o $@ $<
 
 clean:
 	rm -f $(OBJECTS) *.d $(BINARY) *~
