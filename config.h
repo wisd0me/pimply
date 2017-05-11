@@ -13,7 +13,9 @@ struct config {
     gchar *current;
     gchar *rcfile;
     gboolean opened;
-} config;
+};
+
+extern struct config config;
 
 gint config_check();
 gint config_read();

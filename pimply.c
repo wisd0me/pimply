@@ -191,7 +191,6 @@ PimplyImage *pimply_load_image(gchar *file) {
     if (image == NULL || file == NULL)
         return(NULL);
 
-    g_free(image->file_name);
     image->file_name = g_strdup(file);
     //g_print("load_image_true(): file_name %s\n", image->file_name);
     if (gdk_pixbuf_get_file_info(image->file_name, &image->width, &image->height) == NULL) {
@@ -460,6 +459,7 @@ void usage(char *name) {
     g_print("  --help, -h\tdisplay this message and exit\n");
     g_print("  --version, -v\tversion and author information\n");
     g_print("  --restore, -r\trestore previously set wallpaper\n");
+    g_print("  --dump, -d\tdump config to stdout\n");
 }
 
 void parseargs(int argc, char **argv) {
@@ -469,11 +469,12 @@ void parseargs(int argc, char **argv) {
         {"help",        no_argument, 0, 'h'},
         {"version",     no_argument, 0, 'v'},
         {"restore",     no_argument, 0, 'r'},
+        {"dump",        no_argument, 0, 'd'},
         {NULL, 0, NULL, 0}
     };
 
     while(1) {
-        c = getopt_long(argc, argv, "hvr", long_opts, &opt_index);
+        c = getopt_long(argc, argv, "hvrd", long_opts, &opt_index);
         /* Detect the end of options */
         if (c == -1)
             break;
@@ -509,18 +510,19 @@ void parseargs(int argc, char **argv) {
 
             pimply_set_background(&image);
             break;
+        case 'd':
+            config_dump();
+            break;
         }
     }
     exit(0);
 }
 
 int main(int argc, char **argv) {
+    gtk_init(&argc, &argv);
     if (config_check() != -1)
         config_read();
 
-    //config_dump();
-
-    gtk_init(&argc, &argv);
     pimply_init();
 
     if (argc > 1)

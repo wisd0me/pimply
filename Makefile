@@ -2,12 +2,13 @@
 export MAKEFLAGS += --no-builtin-rules
 .SUFFIXES:
 
-CFLAGS	= -std=gnu99 -O0 -g -Wall -pipe `pkg-config --cflags gtk+-2.0` 
-LDFLAGS = `pkg-config --libs gtk+-2.0` -lX11 -Wl,-O1
+CFLAGS := -std=gnu99 -O1 -g -Wall -pipe `pkg-config --cflags gtk+-2.0`
+LDFLAGS := -Wl,-O1
+LDFLAGS += `pkg-config --libs x11 gtk+-2.0`
 OBJECTS := $(patsubst %.c, %.o, $(wildcard *.c))
-PREFIX	= /usr/local
-INSTALL	= -m 755
-BINARY  = pimply
+PREFIX := /usr/local
+INSTALL := -m 755
+BINARY := pimply
 
 .PHONY: all clean install uninstall
 all: $(BINARY)
@@ -26,5 +27,5 @@ clean:
 install:
 	install $(INSTALL) $(BINARY) $(PREFIX)/bin
 
-uninstall:	
+uninstall:
 	rm $(PREFIX)/bin/$(BINARY)

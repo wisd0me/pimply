@@ -10,7 +10,7 @@ Bug reports/other feedback is appreciated.
 Compile:
  $ make
 
-Install:
+Install (to /usr/local by default):
  # make install
 or
  # make PREFIX=/usr install
