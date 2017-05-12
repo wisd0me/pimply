@@ -1,6 +1,6 @@
 /*
  * Pimply
- * by Lil AZ ak47izatool@gmail.com
+ * by wisd0me ak47izatool@gmail.com
  */
 
 #ifndef _PIMPLY_H
@@ -8,7 +8,7 @@
 
 #include <gtk/gtk.h>
 
-#define VERSION "0.2-rc2"
+#define VERSION "0.2"
 #define NAME "Pimply"
 
 /* main window */

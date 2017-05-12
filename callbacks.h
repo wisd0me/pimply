@@ -1,6 +1,6 @@
 /*
  * Pimply
- * Lil AZ ak47izatool@gmail.com
+ * wisd0me ak47izatool@gmail.com
  */
 
 #ifndef _CALLBACKS_H
