@@ -1,12 +1,8 @@
-# Compiled Object files
-*.slo
-*.lo
+pimply
+objdir
 *.o
-
-# Compiled Dynamic libraries
+*.d
 *.so
-
-# Compiled Static libraries
 *.lai
 *.la
 *.a

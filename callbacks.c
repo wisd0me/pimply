@@ -1,6 +1,6 @@
 /*
  * Pimply 
- * by Lil AZ ak47izatool@gmail.com
+ * by wisd0me ak47izatool@gmail.com
  */
 
 #include <gtk/gtk.h>
@@ -130,16 +130,16 @@ void on_apply_b() {
 
 void on_about_b(GtkWidget *widget, gpointer data) {
     GtkWidget *about;
-    //const gchar *authors[] = {"Lil AZ <ak47izatool@gmail.com>", NULL};
+    //const gchar *authors[] = {"wisd0me <ak47izatool@gmail.com>", NULL};
 
     about = gtk_about_dialog_new();
     gtk_about_dialog_set_program_name(GTK_ABOUT_DIALOG(about), NAME);
     gtk_about_dialog_set_version(GTK_ABOUT_DIALOG(about), VERSION);
-    gtk_about_dialog_set_copyright(GTK_ABOUT_DIALOG(about), "Written by Lil AZ <ak47izatool@gmail.com>");
+    gtk_about_dialog_set_copyright(GTK_ABOUT_DIALOG(about), "Written by wisd0me <ak47izatool@gmail.com>");
     gtk_about_dialog_set_license(GTK_ABOUT_DIALOG(about), "Distributed under the terms of GPLv2 n all dat...");
     gtk_about_dialog_set_comments(GTK_ABOUT_DIALOG(about), "Pimply - GTK2 wallpaper changer");
     //gtk_about_dialog_set_authors(GTK_ABOUT_DIALOG(about), authors);
-    //gtk_about_dialog_set_translator_credits(GTK_ABOUT_DIALOG(about), "Lil AZ\nRichard M. Stallman");
+    //gtk_about_dialog_set_translator_credits(GTK_ABOUT_DIALOG(about), "wisd0me\nRichard M. Stallman");
 
     g_signal_connect_swapped(G_OBJECT(about), "destroy", G_CALLBACK(gtk_widget_destroy), G_OBJECT(about));
     gtk_dialog_run(GTK_DIALOG(about));

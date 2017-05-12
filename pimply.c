@@ -1,6 +1,6 @@
 /*
  * Pimply 
- * by Lil AZ ak47izatool@gmail.com
+ * by wisd0me ak47izatool@gmail.com
  */
 
 #include <stdlib.h>
@@ -303,16 +303,19 @@ static gboolean tree_find_current (GtkTreeModel *model,
                                    gpointer      user_data) 
 {
     gchar *file;
+    gboolean ret = FALSE;
  
     gtk_tree_model_get(model, iter, 2, &file, -1);
     //g_print("config_foreach_func(): %s\n", file);
     if (g_strcmp0(file, config.current) == 0) {
+        GtkTreePath *treepath = gtk_tree_model_get_path(model, iter);
         //g_print("Current %s found!!1 Now I should only select it!\n", file);
-        gtk_tree_view_set_cursor(GTK_TREE_VIEW(pimply.tree), gtk_tree_model_get_path(model, iter), NULL, FALSE);
-        return(TRUE);
+        gtk_tree_view_set_cursor(GTK_TREE_VIEW(pimply.tree), treepath, NULL, FALSE);
+        gtk_tree_path_free(treepath);
+        ret = TRUE;
     }
     g_free(file);
-    return(FALSE); /* do not stop walking the store, call us with next row */
+    return(ret);
 }
 
 void pimply_init() {

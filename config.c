@@ -1,6 +1,6 @@
 /*
  * Pimply
- * by Lil AZ ak47izatool@gmail.com
+ * by wisd0me ak47izatool@gmail.com
  */
 
 //#define _GNU_SOURCE
